@@ -1,5 +1,6 @@
 package com.lagou.filter;
 
+import com.lagou.dubbo.api.AuthCodeService;
 import com.lagou.feign.UserTokenFeign;
 import com.lagou.vo.IpCheckVo;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class CommonFilter implements GlobalFilter, Ordered {
     private int maxCount;
 
     @Resource
-    private UserTokenFeign userTokenFeign;
+    private AuthCodeService userTokenFeign;
 
     // 模拟黑名单（实际可以去数据库或者redis中查询）
     private static List<String> blackList = new ArrayList<>();

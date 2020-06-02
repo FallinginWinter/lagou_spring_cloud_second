@@ -4,12 +4,17 @@ server:
 spring:
   application:
     name: service-gateway
-#  profiles:
-#    include: dev
+  profiles:
+    active: dev
   cloud:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
+      config:
+        server-addr: localhost:8848
+        namespace: f965f7e4-7294-40cf-825c-ef363c269d37
+        group: DEFAULT_GROUP
+        file-extension: yaml
     gateway:
       routes: # 路由可以有多个
         - id: service-code-router      # 我们自定义的路由 ID，保持唯一
