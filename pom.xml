@@ -8,15 +8,16 @@
         <version>2.1.6.RELEASE</version>
     </parent>
     <groupId>com.lagou</groupId>
-    <artifactId>spring_cloud_first</artifactId>
+    <artifactId>spring_cloud_second</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <name>spring_cloud_first</name>
+    <name>spring_cloud_second</name>
     <description>Demo project for Spring Boot</description>
 
     <modules>
-        <module>service_user</module>
-        <module>service_mail</module>
-        <module>service_code</module>
+        <module>service-code</module>
+        <module>service-gateway</module>
+        <module>service-mail</module>
+        <module>service-user</module>
         <module>web</module>
         <module>common</module>
     </modules>
@@ -26,6 +27,7 @@
 
     <dependencyManagement>
         <dependencies>
+            <!--spring cloud依赖管理，引入了Spring Cloud的版本-->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -33,6 +35,17 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+
+            <!--SCA -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>2.1.0.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!--SCA -->
         </dependencies>
     </dependencyManagement>
 
