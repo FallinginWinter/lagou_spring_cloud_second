@@ -14,13 +14,11 @@
     <description>Demo project for Spring Boot</description>
 
     <modules>
-        <module>eureka_8762</module>
         <module>service_user</module>
         <module>service_mail</module>
         <module>service_code</module>
         <module>web</module>
         <module>common</module>
-        <module>service_config</module>
     </modules>
 
     <!--父工程打包方式为pom-->
