@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+</head>
+<body>
+<form>
+  <table class="lp-login">
+    <tr>
+      <td align="right"><span>邮箱</span></td>
+      <td align="center">
+        <input type="text" id="toAccount"/>
+      </td>
+    </tr>
+    <tr>
+      <td align="right"><span>密码</span></td>
+      <td align="center">
+        <input type="password" id="fromAccount"/>
+      </td>
+    </tr>
+    <tr align="center">
+      <td colspan="2">
+        <a href="javascript:void(0)" class="submitBtn">
+          登 录
+        </a>
+      </td>
+    </tr>
+    <tr align="center">
+      <td colspan="2">
+        <a href="javascript:void(0)" id="toRegister">
+          注册新账号
+        </a>
+      </td>
+    </tr>
+  </table>
+</form>
+</body>
+
+
+<script type="text/javascript">
+  $(function () {
+    $(".submitBtn").bind("click", function () {
+      var fromAccount = $("#fromAccount").val();
+      var toAccount = $("#toAccount").val();
+      if (!toAccount || !fromAccount) {
+        alert("请输入账号密码！")
+        return
+      }
+      $.ajax({
+        url: '/api/user/login/' + toAccount + '/' + fromAccount,
+        type: 'GET',    //GET
+        contentType: 'application/json;charset=utf-8',
+        // async: false,    //或false,是否异步
+        //  默认情况下，标准的跨域请求是不会发送cookie的
+        xhrFields: {
+          withCredentials: true
+        },
+        timeout: 5000,    //超时时间
+        dataType: 'text', //返回的数据格式：json/xml/html/script/jsonp/text
+        success: function (data) {
+          console.log(data);
+          if (data == "Request be denied!") {
+            alert("请检查账户或密码！")
+            return
+          }
+          if (data == "Request to more!") {
+            alert("访问次数过多！")
+            return
+          }
+          if (data == 'false') {
+            alert("请检查账户或密码！")
+          } else {
+            window.location.href = "./welcome.html?email=" + data;
+          }
+        }
+
+      })
+    })
+  })
+
+  $(function () {
+    $("#toRegister").bind("click", function () {
+      window.location.href = "./register.html";
+    })
+  })
+</script>
+
+
+<style type="text/css">
+  body {
+    background-color: #00b38a;
+    text-align: center;
+  }
+
+  .lp-login {
+    position: absolute;
+    width: 600px;
+    height: 300px;
+    top: 50%;
+    left: 50%;
+    margin-top: -250px;
+    margin-left: -250px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 0 10px #12a591;
+    padding: 57px 50px 35px;
+    box-sizing: border-box
+  }
+
+
+  .lp-login .submitBtn {
+    display: block;
+    text-decoration: none;
+    height: 48px;
+    width: 150px;
+    line-height: 48px;
+    font-size: 16px;
+    color: #fff;
+    text-align: center;
+    background-image: -webkit-gradient(linear, left top, right top, from(#09cb9d), to(#02b389));
+    background-image: linear-gradient(90deg, #09cb9d, #02b389);
+    border-radius: 3px
+  }
+
+
+  input[type='text'] {
+    height: 30px;
+    width: 250px;
+  }
+
+  input[type='password'] {
+    height: 30px;
+    width: 250px;
+  }
+
+  span {
+    font-style: normal;
+    font-variant-ligatures: normal;
+    font-variant-caps: normal;
+    font-variant-numeric: normal;
+    font-variant-east-asian: normal;
+    font-weight: normal;
+    font-stretch: normal;
+    font-size: 14px;
+    line-height: 22px;
+    font-family: "Hiragino Sans GB", "Microsoft Yahei", SimSun, Arial, "Helvetica Neue", Helvetica;
+  }
+
+</style>
+
+</html>

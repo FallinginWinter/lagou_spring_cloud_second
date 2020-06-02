@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+</head>
+<body>
+<div align="center" id="showSpan"></div>
+</body>
+
+
+<script type="text/javascript">
+  var paramobj = {};
+  window.onload = function () {
+    var parameterURL = location.search.substring(1, location.search.length);
+    var paramArr = parameterURL.split("&");
+    var temp;
+    //定义2个变量接收key，value并存到paramobj中
+    for (var i = 0; i < paramArr.length; i++) {
+      temp = paramArr[i].split("=");
+      if (temp.length === 1) {
+        paramobj[temp[0]] = "";
+      } else if (temp.length > 1) {
+        for (j = 0; j < temp.length; j++) {
+          paramobj[temp[0]] = decodeURIComponent(temp[1]);
+        }
+      }
+    }
+    //此时参数已全部保存至paramobj中,这里显示到div
+    var showStr = "";
+    for (var a in paramobj) {
+      showStr += (paramobj[a]+",欢迎登陆系统！");
+    }
+    document.getElementById("showSpan").innerText = showStr;
+  };
+
+</script>
+
+
+<style type="text/css">
+  body {
+    background-color: #00b38a;
+    text-align: center;
+  }
+
+  input[type='text'] {
+    height: 30px;
+    width: 250px;
+  }
+
+  input[type='password'] {
+    height: 30px;
+    width: 250px;
+  }
+
+  span {
+    font-style: normal;
+    font-variant-ligatures: normal;
+    font-variant-caps: normal;
+    font-variant-numeric: normal;
+    font-variant-east-asian: normal;
+    font-weight: normal;
+    font-stretch: normal;
+    font-size: 14px;
+    line-height: 22px;
+    font-family: "Hiragino Sans GB", "Microsoft Yahei", SimSun, Arial, "Helvetica Neue", Helvetica;
+  }
+
+</style>
+
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/jquery.cookie.js"></script>
+</head>
+<body>
+<form>
+  <table class="lp-login">
+    <tr>
+      <td align="right"><span>邮箱</span></td>
+      <td align="center">
+        <input type="text" id="toAccount" value=""/>
+      </td>
+    </tr>
+    <tr>
+      <td align="right"><span>密码</span></td>
+      <td align="center">
+        <input type="password" id="fromAccount" value=""/>
+      </td>
+    </tr>
+    <tr>
+      <td align="right"><span>确认密码</span></td>
+      <td align="center">
+        <input type="password" id="checkFromAccount" value=""/>
+      </td>
+    </tr>
+    <tr>
+      <td align="right"><span>验证码</span></td>
+      <td align="center">
+        <input type="text" id="fromCheck" value=""/><span id="getCheckCode" style="margin-left:10px;margin-right:
+        -79px">获取验证码</span>
+      </td>
+    </tr>
+    <tr align="center">
+      <td colspan="2">
+        <a href="javascript:void(0)" class="submitBtn">
+          注 册
+        </a>
+      </td>
+    </tr>
+  </table>
+</form>
+</body>
+
+
+<script type="text/javascript">
+
+  var currentTime = 0;
+
+  $(function () {
+    $("#getCheckCode").bind("click", function () {
+      console.log("click code");
+      var fromAccount = $("#fromAccount").val();
+      var toAccount = $("#toAccount").val();
+      var checkFromAccount = $("#checkFromAccount").val();
+      var fromCheck = $("#fromCheck").val();
+      if (!toAccount) {
+        alert("请输入邮箱！");
+        return;
+      }
+      if (!checkFromAccount || !fromAccount || checkFromAccount !== fromAccount) {
+        alert("请检查密码！")
+        return;
+      }
+      var time = Date.now();
+      if (currentTime === 0) {
+        currentTime = time;
+      } else {
+        if (time - currentTime < 60 * 1000) {
+          alert("60s内只能获取一次验证码!");
+          return;
+        } else {
+          currentTime = time;
+        }
+      }
+      $.ajax({
+        url: '/api/code/getCheckCode/' + toAccount,
+        type: 'GET',    //GET
+        contentType: 'application/json;charset=utf-8',
+        // async: false,    //或false,是否异步
+        timeout: 5000,    //超时时间
+        dataType: 'text', //返回的数据格式：json/xml/html/script/jsonp/text
+        success: function (data) {
+          console.log(data);
+          alert("验证码发送成功！")
+        }
+      })
+    })
+  })
+
+  $(function () {
+    $(".submitBtn").bind("click", function () {
+      var fromAccount = $("#fromAccount").val();
+      var toAccount = $("#toAccount").val();
+      var checkFromAccount = $("#checkFromAccount").val();
+      var fromCheck = $("#fromCheck").val();
+      if (!toAccount) {
+        alert("请输入邮箱！");
+        return
+      }
+      if (!checkFromAccount || !fromAccount || checkFromAccount !== fromAccount) {
+        alert("请检查密码！")
+        return;
+      }
+      $.ajax({
+        url: '/api/user/register/' + toAccount + '/' + fromAccount + '/' + fromCheck,
+        type: 'GET',    //GET
+        contentType: 'application/json;charset=utf-8',
+        // async: false,    //或false,是否异步
+        timeout: 5000,    //超时时间
+        dataType: 'text', //返回的数据格式：json/xml/html/script/jsonp/text
+        success: function (data) {
+          console.log(data);
+          if (data != 'false') {
+            $.cookie('token', data, { expires: 7, path: '/' });
+            window.location.href = "./index.html";
+          } else {
+            alert("注册失败！")
+          }
+        }
+      })
+    })
+  })
+
+</script>
+
+
+<style type="text/css">
+  body {
+    background-color: #00b38a;
+    text-align: center;
+  }
+
+  .lp-login {
+    position: absolute;
+    width: 600px;
+    height: 300px;
+    top: 50%;
+    left: 50%;
+    margin-top: -250px;
+    margin-left: -250px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 0 10px #12a591;
+    padding: 57px 50px 35px;
+    box-sizing: border-box
+  }
+
+
+  .lp-login .submitBtn {
+    display: block;
+    text-decoration: none;
+    height: 48px;
+    width: 150px;
+    line-height: 48px;
+    font-size: 16px;
+    color: #fff;
+    text-align: center;
+    background-image: -webkit-gradient(linear, left top, right top, from(#09cb9d), to(#02b389));
+    background-image: linear-gradient(90deg, #09cb9d, #02b389);
+    border-radius: 3px
+  }
+
+
+  input[type='text'] {
+    height: 30px;
+    width: 250px;
+  }
+
+  input[type='password'] {
+    height: 30px;
+    width: 250px;
+  }
+
+  span {
+    font-style: normal;
+    font-variant-ligatures: normal;
+    font-variant-caps: normal;
+    font-variant-numeric: normal;
+    font-variant-east-asian: normal;
+    font-weight: normal;
+    font-stretch: normal;
+    font-size: 14px;
+    line-height: 22px;
+    font-family: "Hiragino Sans GB", "Microsoft Yahei", SimSun, Arial, "Helvetica Neue", Helvetica;
+  }
+
+</style>
+
+</html>

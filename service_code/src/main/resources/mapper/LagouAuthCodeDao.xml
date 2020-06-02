@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lagou.dao.LagouAuthCodeDao">
+
+    <resultMap type="com.lagou.entity.LagouAuthCode" id="LagouAuthCodeMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="code" column="code" jdbcType="VARCHAR"/>
+        <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+        <result property="expiretime" column="expiretime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="LagouAuthCodeMap">
+        select
+          id, email, code, createtime, expiretime
+        from mytest.lagou_auth_code
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="LagouAuthCodeMap">
+        select
+          id, email, code, createtime, expiretime
+        from mytest.lagou_auth_code
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="LagouAuthCodeMap">
+        select
+          id, email, code, createtime, expiretime
+        from mytest.lagou_auth_code
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+            <if test="code != null and code != ''">
+                and code = #{code}
+            </if>
+            <if test="createtime != null">
+                and createtime = #{createtime}
+            </if>
+            <if test="expiretime != null">
+                and expiretime = #{expiretime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into mytest.lagou_auth_code(email, code, createtime, expiretime)
+        values (#{email}, #{code}, #{createtime}, #{expiretime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update mytest.lagou_auth_code
+        <set>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="code != null and code != ''">
+                code = #{code},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime},
+            </if>
+            <if test="expiretime != null">
+                expiretime = #{expiretime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from mytest.lagou_auth_code where id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lagou.dao.LagouTokenDao">
+
+    <resultMap type="com.lagou.entity.LagouToken" id="LagouTokenMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="token" column="token" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="LagouTokenMap">
+        select
+          id, email, token
+        from mytest.lagou_token
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="LagouTokenMap">
+        select
+          id, email, token
+        from mytest.lagou_token
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="LagouTokenMap">
+        select
+          id, email, token
+        from mytest.lagou_token
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+            <if test="token != null and token != ''">
+                and token = #{token}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into mytest.lagou_token(email, token)
+        values (#{email}, #{token})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update mytest.lagou_token
+        <set>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="token != null and token != ''">
+                token = #{token},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from mytest.lagou_token where id = #{id}
+    </delete>
+
+</mapper>
