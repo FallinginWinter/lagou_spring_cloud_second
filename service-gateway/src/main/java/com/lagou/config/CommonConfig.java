@@ -1,7 +1,5 @@
 package com.lagou.config;
 
-import com.lagou.base.MyKeyResolver;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**

@@ -4,6 +4,8 @@ spring:
     name: service-code
   profiles:
     active: dev
+  main:
+    allow-bean-definition-overriding: true
   cloud:
     nacos:
       discovery:
@@ -13,6 +15,22 @@ spring:
         namespace: f965f7e4-7294-40cf-825c-ef363c269d37
         group: DEFAULT_GROUP
         file-extension: yaml
+
+dubbo:
+  scan:
+    # dubbo 服务扫描基准包
+    base-packages: com.lagou.service.Impl
+  protocol:
+    # dubbo 协议
+    name: dubbo
+    # dubbo 协议端⼝（ -1 表示⾃增端⼝，从 20880 开始）
+    port: -1
+  registry:
+    # 挂载到 Spring Cloud 的注册中⼼
+    address: spring-cloud://localhost
+  cloud:
+    # 订阅服务提供⽅的应⽤列表，订阅多个服务提供者使⽤ "," 连接
+    subscribed-services: service-mail
 
 server:
   port: 8081

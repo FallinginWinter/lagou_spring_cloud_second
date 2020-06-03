@@ -1,10 +1,10 @@
 package com.lagou.controller;
 
+import com.lagou.common.RetResult;
+import com.lagou.dubbo.api.MailService;
 import com.lagou.entity.LagouAuthCode;
-import com.lagou.entity.LagouToken;
 import com.lagou.service.LagouAuthCodeService;
-import com.lagou.service.LagouTokenService;
-import com.lagou.service.MailService;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,35 +22,18 @@ import java.util.List;
 @RequestMapping("/api/code")
 public class AuthController {
 
-    @Resource
+    @Reference
     private MailService mailService;
-
-    @Resource
-    private LagouTokenService lagouTokenService;
 
     @Resource
     private LagouAuthCodeService lagouAuthCodeService;
 
     private static SecureRandom secureRandom = new SecureRandom();
 
-    @RequestMapping("/check/{token}")
-    public Object checkUser(@PathVariable String token) {
-        List<LagouToken> lagouTokens = lagouTokenService.queryAll(new LagouToken() {{
-            setToken(token);
-        }});
-        if (lagouTokens==null || lagouTokens.size()!=1) {
-            return false;
-        } else {
-            String email = lagouTokens.get(0).getEmail();
-            System.out.println(email);
-            return email;
-        }
-    }
-
     @RequestMapping("/getCheckCode/{email}")
-    public Object getCheckCode(@PathVariable String email) {
+    public RetResult getCheckCode(@PathVariable String email) {
         if (email == null || "".equals(email)) {
-            return false;
+            return new RetResult<>(-1);
         }
         List<LagouAuthCode> lagouAuthCodes = lagouAuthCodeService.queryAll(new LagouAuthCode() {{
             setEmail(email);
@@ -60,16 +43,18 @@ public class AuthController {
             java.util.Date date = lagouAuthCode.getExpiretime();
             long currentTimeMillis = System.currentTimeMillis();
             long l = currentTimeMillis - date.getTime();
+            //判断验证码超时时间 10分钟
             if (l <= 10 * 60 * 1000) {
-                mailService.sendMail(lagouAuthCode.getCode());
-                return true;
+                mailService.sendMail(lagouAuthCode.getCode(), email);
+                return RetResult.SUCCESS;
             } else {
+                //取旧验证码
                 String code = getCode();
                 lagouAuthCode.setCode(code);
                 lagouAuthCode.setExpiretime(new Date(currentTimeMillis));
                 lagouAuthCodeService.update(lagouAuthCode);
-                mailService.sendMail(code);
-                return true;
+                mailService.sendMail(code, email);
+                return RetResult.SUCCESS;
             }
         }
         String code = getCode();
@@ -79,8 +64,8 @@ public class AuthController {
             setCreatetime(new Date(System.currentTimeMillis()));
             setExpiretime(new Date(System.currentTimeMillis()));
         }});
-        mailService.sendMail(code);
-        return true;
+        mailService.sendMail(code, email);
+        return RetResult.SUCCESS;
     }
 
     private String getCode() {

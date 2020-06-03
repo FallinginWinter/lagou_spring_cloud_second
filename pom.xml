@@ -19,8 +19,7 @@
         <module>service-mail</module>
         <module>service-user</module>
         <module>web</module>
-        <module>common</module>
-        <module>dubbo-api</module>
+<!--        <module>dubbo-api</module>-->
     </modules>
 
     <!--父工程打包方式为pom-->

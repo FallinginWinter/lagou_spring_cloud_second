@@ -16,17 +16,5 @@ import javax.annotation.Resource;
 @RestController
 public class MailController {
 
-    @Resource
-    private MailTemplateService mailTemplateService;
-
-    @RequestMapping("/send/mail/{code}")
-    public Object sendMail(@PathVariable String code) {
-        MailInfoVo mailInfoVo = new MailInfoVo();
-        mailInfoVo.setHtmlContent("验证码: " + code);
-        mailInfoVo.setTitle("验证码邮件");
-        mailInfoVo.setToUsers(new String[]{"847198028@qq.com"});
-        mailTemplateService.sendMailByHtml(mailInfoVo);
-        return true;
-    }
 
 }
