@@ -26,11 +26,11 @@ public class LagouAuthCode implements Serializable {
     /**
     * 创建时间
     */
-    private Date createtime;
+    private long createtime;
     /**
     * 过期时间
     */
-    private Date expiretime;
+    private long expiretime;
 
 
     public Integer getId() {
@@ -57,19 +57,19 @@ public class LagouAuthCode implements Serializable {
         this.code = code;
     }
 
-    public Date getCreatetime() {
+    public long getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(Date createtime) {
+    public void setCreatetime(long createtime) {
         this.createtime = createtime;
     }
 
-    public Date getExpiretime() {
+    public long getExpiretime() {
         return expiretime;
     }
 
-    public void setExpiretime(Date expiretime) {
+    public void setExpiretime(long expiretime) {
         this.expiretime = expiretime;
     }
 

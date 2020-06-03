@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.security.SecureRandom;
-import java.sql.Date;
 import java.util.List;
 
 /**
@@ -40,9 +39,9 @@ public class AuthController {
         }});
         if (lagouAuthCodes != null && lagouAuthCodes.size() == 1) {
             LagouAuthCode lagouAuthCode = lagouAuthCodes.get(0);
-            java.util.Date date = lagouAuthCode.getExpiretime();
+            long date = lagouAuthCode.getExpiretime();
             long currentTimeMillis = System.currentTimeMillis();
-            long l = currentTimeMillis - date.getTime();
+            long l = currentTimeMillis - date;
             //判断验证码超时时间 10分钟
             if (l <= 10 * 60 * 1000) {
                 mailService.sendMail(lagouAuthCode.getCode(), email);
@@ -51,7 +50,7 @@ public class AuthController {
                 //取旧验证码
                 String code = getCode();
                 lagouAuthCode.setCode(code);
-                lagouAuthCode.setExpiretime(new Date(currentTimeMillis));
+                lagouAuthCode.setExpiretime(currentTimeMillis);
                 lagouAuthCodeService.update(lagouAuthCode);
                 mailService.sendMail(code, email);
                 return RetResult.SUCCESS;
@@ -61,8 +60,8 @@ public class AuthController {
         lagouAuthCodeService.insert(new LagouAuthCode() {{
             setEmail(email);
             setCode(code);
-            setCreatetime(new Date(System.currentTimeMillis()));
-            setExpiretime(new Date(System.currentTimeMillis()));
+            setCreatetime(System.currentTimeMillis());
+            setExpiretime(System.currentTimeMillis());
         }});
         mailService.sendMail(code, email);
         return RetResult.SUCCESS;
