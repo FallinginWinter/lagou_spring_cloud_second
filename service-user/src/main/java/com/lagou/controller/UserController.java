@@ -75,7 +75,7 @@ public class UserController {
                 } else {
                     String token = lagouTokens.get(0).getToken();
                     //已注册 且有token
-                    return new RetResult<>(-2, token);
+                    return new RetResult<>(-2, "",token);
                 }
             }
             String token = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();

@@ -102,7 +102,11 @@
         return
       }
       if (!checkFromAccount || !fromAccount || checkFromAccount !== fromAccount) {
-        alert("请检查密码！")
+        alert("请检查密码！");
+        return;
+      }
+      if (!fromCheck) {
+        alert("请输入验证码！");
         return;
       }
       $.ajax({

@@ -64,6 +64,7 @@ public class CommonFilter implements GlobalFilter, Ordered {
         ServerHttpResponse response = exchange.getResponse();
         // 从request对象中获取客户端ip
         String clientIp = request.getRemoteAddress().getHostString();
+
         // 拿着clientIp去黑名单中查询，存在的话就决绝访问
         if (blackList.contains(clientIp)) {
             // 决绝访问，返回状态码
@@ -96,6 +97,9 @@ public class CommonFilter implements GlobalFilter, Ordered {
 
         //限流 login
         Mono<Void> wrap1 = checkIpCount(response, clientIp);
+//        System.out.println(request.getRemoteAddress().getAddress().getHostAddress());
+//        System.out.println(request.getRemoteAddress().getHostName());
+//        System.out.println(request.getRemoteAddress().getAddress().getHostName());
         if (wrap1 != null) {
             return wrap1;
         }
