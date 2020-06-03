@@ -1,5 +1,6 @@
 package com.lagou.common;
 
+import com.alibaba.fastjson.JSON;
 import lombok.*;
 
 import java.io.Serializable;
@@ -10,7 +11,6 @@ import java.io.Serializable;
  */
 @Setter
 @Getter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class RetResult<T> implements Serializable {
@@ -31,8 +31,17 @@ public class RetResult<T> implements Serializable {
         setRetCode(retCode);
     }
 
+    public RetResult(int retCode, String retInfo) {
+        this.retCode = retCode;
+        this.retInfo = retInfo;
+    }
+
     public boolean isSuccess() {
         return getRetCode() == 0;
     }
 
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
+    }
 }

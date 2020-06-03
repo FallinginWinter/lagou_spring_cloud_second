@@ -1,5 +1,6 @@
 package com.lagou.filter;
 
+import com.lagou.common.RetResult;
 import com.lagou.dubbo.api.AuthCodeService;
 import com.lagou.vo.IpCheckVo;
 import lombok.extern.slf4j.Slf4j;
@@ -69,13 +70,14 @@ public class CommonFilter implements GlobalFilter, Ordered {
 //            response.setStatusCode(HttpStatus.UNAUTHORIZED);
             System.out.println("=====>IP:" + clientIp + " 在黑名单中，将被拒绝访问！");
             String data = "Request be denied!";
-            DataBuffer wrap = response.bufferFactory().wrap(data.getBytes());
+            RetResult<String> result = new RetResult<>(-1, data);
+            DataBuffer wrap = response.bufferFactory().wrap(result.toString().getBytes());
             return response.writeWith(Mono.just(wrap));
         }
 
         String uriStr = request.getURI().toString();
         System.out.println(uriStr);
-        if (!uriStr.contains("/api/code/getCheckCode/") && !uriStr.contains("/api/user/register/")) {
+        if (!uriStr.contains("/api/code/getCheckCode/") && !uriStr.contains("/api/user/register")) {
             MultiValueMap<String, HttpCookie> cookies = request.getCookies();
             HttpCookie token = cookies.getFirst("token");
             System.out.println(token);
@@ -86,7 +88,8 @@ public class CommonFilter implements GlobalFilter, Ordered {
 //                response.setStatusCode(HttpStatus.UNAUTHORIZED);
                 System.out.println("=====>IP:" + clientIp + " 系统异常！");
                 String data = "Request be denied!";
-                DataBuffer wrap = response.bufferFactory().wrap(data.getBytes());
+                RetResult<String> result = new RetResult<>(-1, data);
+                DataBuffer wrap = response.bufferFactory().wrap(result.toString().getBytes());
                 return response.writeWith(Mono.just(wrap));
             } else {
                 System.out.println("email = " + checkToken);
@@ -112,6 +115,7 @@ public class CommonFilter implements GlobalFilter, Ordered {
                 setCreatTime(currentTimeMillis);
             }});
         } else {
+            //limitMinute分钟超时
             if (currentTimeMillis - ipCheckVo.getCreatTime() >= limitMinute * 60 * 1000) {
                 ipCheckVo.setCount(1);
                 ipCheckVo.setCreatTime(currentTimeMillis);
@@ -119,10 +123,10 @@ public class CommonFilter implements GlobalFilter, Ordered {
                 int nextCount = ipCheckVo.getCount() + 1;
                 if (nextCount > maxCount) {
                     // 决绝访问，返回状态码
-//                    response.setStatusCode(HttpStatus.UNAUTHORIZED);
                     System.out.println("=====>IP:" + clientIp + " 访问次数过多！");
                     String data = "Request to more!";
-                    DataBuffer wrap = response.bufferFactory().wrap(data.getBytes());
+                    RetResult<String> result = new RetResult<>(-1, data);
+                    DataBuffer wrap = response.bufferFactory().wrap(result.toString().getBytes());
                     return response.writeWith(Mono.just(wrap));
                 } else {
                     ipCheckVo.setCount(nextCount);

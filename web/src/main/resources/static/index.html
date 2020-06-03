@@ -58,21 +58,23 @@
           withCredentials: true
         },
         timeout: 5000,    //超时时间
-        dataType: 'text', //返回的数据格式：json/xml/html/script/jsonp/text
+        dataType: 'json', //返回的数据格式：json/xml/html/script/jsonp/text
         success: function (data) {
+          var retInfo = data.retInfo;
           console.log(data);
-          if (data == "Request be denied!") {
-            alert("请检查账户或密码！")
+          if (retInfo == "Request be denied!") {
+            alert("请检查账户或密码！");
             return
           }
-          if (data == "Request to more!") {
-            alert("访问次数过多！")
+          if (retInfo == "Request to more!") {
+            alert("访问次数过多！");
             return
           }
-          if (data == 'false') {
+          if (!data.success) {
             alert("请检查账户或密码！")
           } else {
-            window.location.href = "./welcome.html?email=" + data;
+            alert("登录成功！");
+            window.location.href = "./welcome.html?email=" + data.result;
           }
         }
 

@@ -61,10 +61,10 @@
         alert("请输入邮箱！");
         return;
       }
-      if (!checkFromAccount || !fromAccount || checkFromAccount !== fromAccount) {
-        alert("请检查密码！")
-        return;
-      }
+      // if (!checkFromAccount || !fromAccount || checkFromAccount !== fromAccount) {
+      //   alert("请检查密码！")
+      //   return;
+      // }
       var time = Date.now();
       if (currentTime === 0) {
         currentTime = time;
@@ -82,7 +82,7 @@
         contentType: 'application/json;charset=utf-8',
         // async: false,    //或false,是否异步
         timeout: 5000,    //超时时间
-        dataType: 'text', //返回的数据格式：json/xml/html/script/jsonp/text
+        dataType: 'json', //返回的数据格式：json/xml/html/script/jsonp/text
         success: function (data) {
           console.log(data);
           alert("验证码发送成功！")
@@ -106,16 +106,25 @@
         return;
       }
       $.ajax({
-        url: '/api/user/register/' + toAccount + '/' + fromAccount + '/' + fromCheck,
-        type: 'GET',    //GET
+        url: '/api/user/register',
+        type: 'POST',    //GET
         contentType: 'application/json;charset=utf-8',
         // async: false,    //或false,是否异步
         timeout: 5000,    //超时时间
-        dataType: 'text', //返回的数据格式：json/xml/html/script/jsonp/text
+        dataType: 'json', //返回的数据格式：json/xml/html/script/jsonp/text
+        data:JSON.stringify({
+          email:toAccount,
+          password:fromAccount,
+          code:fromCheck
+        }),
         success: function (data) {
           console.log(data);
-          if (data != 'false') {
-            $.cookie('token', data, { expires: 7, path: '/' });
+          if (data.success) {
+            $.cookie('token', data.result, { expires: 7, path: '/' });
+            window.location.href = "./index.html";
+          } else if (data.retCode === -2) {
+            alert("用户已注册过，请使用密码登录！");
+            $.cookie('token', data.result, { expires: 7, path: '/' });
             window.location.href = "./index.html";
           } else {
             alert("注册失败！")

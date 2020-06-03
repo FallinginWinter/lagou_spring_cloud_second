@@ -1,6 +1,7 @@
 package com.lagou.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.lagou.common.RetResult;
 import com.lagou.entity.LagouAuthCode;
 import com.lagou.entity.LagouToken;
 import com.lagou.entity.LagouUser;
@@ -34,41 +35,47 @@ public class UserController {
     private LagouUserService lagouUserService;
 
     @RequestMapping("/login/{email}/{password}")
-    public Object login(@PathVariable String email, @PathVariable String password) {
+    public RetResult login(@PathVariable String email, @PathVariable String password) {
         List<LagouUser> lagouUsers = lagouUserService.queryAll(new LagouUser() {{
             setEmail(email);
             setPassword(password);
         }});
         if (lagouUsers == null || lagouUsers.size() != 1) {
-            return false;
+            return new RetResult<>(-1);
         } else {
-            return email;
+            return new RetResult<>(email);
         }
     }
 
-    @RequestMapping("/register/{email}/{password}/{code}")
-    public Object register(@PathVariable String email, @PathVariable String password, @PathVariable String code) {
+    @RequestMapping("/register")
+    public Object register(@RequestBody JSONObject jsonObject) {
+        String email = (String) jsonObject.get("email");
+        String password = (String) jsonObject.get("password");
+        String code = (String) jsonObject.get("code");
         List<LagouAuthCode> lagouAuthCodes = lagouAuthCodeService.queryAll(new LagouAuthCode() {{
             setEmail(email);
         }});
         if (lagouAuthCodes == null || lagouAuthCodes.size() != 1) {
-            return false;
+            return new RetResult<>(-1);
         }
         LagouAuthCode lagouAuthCode = lagouAuthCodes.get(0);
         if (code.equals(lagouAuthCode.getCode())) {
             LagouUser lagouUser = new LagouUser() {{
                 setEmail(email);
-                setPassword(password);
+//                setPassword(password);
             }};
+            //查找用户是否已注册 可考虑同步
             List<LagouUser> lagouUsers = lagouUserService.queryAll(lagouUser);
             if (lagouUsers != null && lagouUsers.size() == 1) {
                 List<LagouToken> lagouTokens = lagouTokenService.queryAll(new LagouToken() {{
                     setEmail(email);
                 }});
-                if (lagouTokens==null || lagouTokens.size()!=1) {
-                    return false;
+                if (lagouTokens == null || lagouTokens.size() != 1) {
+                    return new RetResult<>(-1);
                 } else {
-                    return lagouTokens.get(0).getToken();
+                    String token = lagouTokens.get(0).getToken();
+                    //已注册 且有token
+                    return new RetResult<>(-2, token);
                 }
             }
             String token = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
@@ -76,10 +83,11 @@ public class UserController {
                 setEmail(email);
                 setToken(token);
             }});
+            lagouUser.setPassword(password);
             lagouUserService.insert(lagouUser);
-            return token;
+            return new RetResult<>(token);
         } else {
-            return false;
+            return new RetResult<>(-1);
         }
     }
 
