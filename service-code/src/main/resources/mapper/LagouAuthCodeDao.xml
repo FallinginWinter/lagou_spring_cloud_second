@@ -6,8 +6,8 @@
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="email" column="email" jdbcType="VARCHAR"/>
         <result property="code" column="code" jdbcType="VARCHAR"/>
-        <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
-        <result property="expiretime" column="expiretime" jdbcType="TIMESTAMP"/>
+        <result property="createtime" column="createtime"/>
+        <result property="expiretime" column="expiretime"/>
     </resultMap>
 
     <!--查询单个-->
@@ -29,7 +29,7 @@
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="LagouAuthCodeMap">
         select
-          id, email, code, createtime, expiretime
+        id, email, code, createtime, expiretime
         from mytest.lagou_auth_code
         <where>
             <if test="id != null">
@@ -41,10 +41,10 @@
             <if test="code != null and code != ''">
                 and code = #{code}
             </if>
-            <if test="createtime != null">
+            <if test="createtime != null and createtime != ''">
                 and createtime = #{createtime}
             </if>
-            <if test="expiretime != null">
+            <if test="expiretime != null and expiretime != ''">
                 and expiretime = #{expiretime}
             </if>
         </where>

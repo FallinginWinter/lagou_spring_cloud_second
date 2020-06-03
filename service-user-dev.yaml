@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    name: user
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/mytest?useUnicode=true&characterEncoding=UTF8&useSSL=true&serverTimezone=GMT%2B8
+    username: root
+    password: root
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+     filters: stat
+     maxActive: 20
+     initialSize: 1
+     maxWait: 60000
+     minIdle: 1
+     timeBetweenEvictionRunsMillis: 60000
+     minEvictableIdleTimeMillis: 300000
+     validationQuery: select 'x'
+     testWhileIdle: true
+     testOnBorrow: false
+     testOnReturn: false
+     poolPreparedStatements: true
+     maxOpenPreparedStatements: 20

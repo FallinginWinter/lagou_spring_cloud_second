@@ -1,0 +1,6 @@
+
+mail:
+  host: smtp.qq.com
+  port: 465
+  account: test@qq.com
+  password: zrzmjjhcqylebega

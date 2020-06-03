@@ -92,17 +92,14 @@ public class CommonFilter implements GlobalFilter, Ordered {
                 return response.writeWith(Mono.just(wrap));
             } else {
                 System.out.println("email = " + retResult.getResult().toString());
+                //限流 login
+                Mono<Void> wrap1 = checkIpCount(response, clientIp);
+                if (wrap1 != null) {
+                    return wrap1;
+                }
             }
         }
 
-        //限流 login
-        Mono<Void> wrap1 = checkIpCount(response, clientIp);
-//        System.out.println(request.getRemoteAddress().getAddress().getHostAddress());
-//        System.out.println(request.getRemoteAddress().getHostName());
-//        System.out.println(request.getRemoteAddress().getAddress().getHostName());
-        if (wrap1 != null) {
-            return wrap1;
-        }
         // 合法请求，放行，执行后续的过滤器
         return chain.filter(exchange);
     }

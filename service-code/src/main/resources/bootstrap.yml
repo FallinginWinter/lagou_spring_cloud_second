@@ -15,7 +15,6 @@ spring:
         namespace: f965f7e4-7294-40cf-825c-ef363c269d37
         group: DEFAULT_GROUP
         file-extension: yaml
-
 dubbo:
   scan:
     # dubbo 服务扫描基准包
