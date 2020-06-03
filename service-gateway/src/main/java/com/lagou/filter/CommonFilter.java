@@ -82,21 +82,19 @@ public class CommonFilter implements GlobalFilter, Ordered {
             HttpCookie token = cookies.getFirst("token");
             System.out.println(token);
             String value = token.getValue();
-            Object checkToken = userTokenFeign.checkToken(value);
-            if ("false".equals(checkToken.toString())) {
-                // 决绝访问，返回状态码
-//                response.setStatusCode(HttpStatus.UNAUTHORIZED);
+            RetResult retResult = userTokenFeign.checkToken(value);
+            if (!retResult.isSuccess()) {
                 System.out.println("=====>IP:" + clientIp + " 系统异常！");
                 String data = "Request be denied!";
                 RetResult<String> result = new RetResult<>(-1, data);
                 DataBuffer wrap = response.bufferFactory().wrap(result.toString().getBytes());
                 return response.writeWith(Mono.just(wrap));
             } else {
-                System.out.println("email = " + checkToken);
+                System.out.println("email = " + retResult.getResult().toString());
             }
         }
 
-        //限流
+        //限流 login
         Mono<Void> wrap1 = checkIpCount(response, clientIp);
         if (wrap1 != null) {
             return wrap1;
