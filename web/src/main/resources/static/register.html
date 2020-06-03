@@ -112,23 +112,25 @@
         // async: false,    //或false,是否异步
         timeout: 5000,    //超时时间
         dataType: 'json', //返回的数据格式：json/xml/html/script/jsonp/text
-        data:JSON.stringify({
-          email:toAccount,
-          password:fromAccount,
-          code:fromCheck
+        data: JSON.stringify({
+          email: toAccount,
+          password: fromAccount,
+          code: fromCheck
         }),
         success: function (data) {
           console.log(data);
           if (data.success) {
-            $.cookie('token', data.result, { expires: 7, path: '/' });
+            $.cookie('token', data.result, {expires: 7, path: '/'});
             window.location.href = "./index.html";
           } else if (data.retCode === -2) {
             alert("用户已注册过，请使用密码登录！");
-            $.cookie('token', data.result, { expires: 7, path: '/' });
+            $.cookie('token', data.result, {expires: 7, path: '/'});
             window.location.href = "./index.html";
           } else {
             alert("注册失败！")
           }
+        }, error: function (msg) {
+          alert("请求异常：" + msg);
         }
       })
     })
